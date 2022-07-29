@@ -15,6 +15,10 @@ const utils_1 = require("./utils");
 function buildClient(option) {
     return __awaiter(this, void 0, void 0, function* () {
         const connection = yield client_1.Connection.connect(option.connection);
+        console.log('connection options');
+        console.log(option.connection);
+        console.log('client options');
+        console.log(Object.assign(Object.assign({}, option.workflowOptions), { connection }));
         const client = new client_1.WorkflowClient(Object.assign(Object.assign({}, option.workflowOptions), { connection }));
         connection.onApplicationShutdown = function () {
             return __awaiter(this, void 0, void 0, function* () {
@@ -24,6 +28,7 @@ function buildClient(option) {
         console.log('client has been built');
         console.log(connection);
         console.log(client);
+        console.log(yield connection.ensureConnected());
         return client;
     });
 }
