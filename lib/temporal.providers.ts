@@ -6,8 +6,8 @@ import { getQueueToken } from './utils';
 export async function buildClient(option: TemporalModuleOptions): Promise<WorkflowClient> {
   const connection = await Connection.connect(option.connection);
   const client = new WorkflowClient({
-    connection,
     ...option.workflowOptions,
+    connection,
   });
 
   (connection as any as OnApplicationShutdown).onApplicationShutdown = async function (
@@ -15,7 +15,9 @@ export async function buildClient(option: TemporalModuleOptions): Promise<Workfl
   ) {
     return await this.close();
   };
-
+  console.log('client has been built');
+  console.log(connection);
+  console.log(client);
   return client;
 }
 
