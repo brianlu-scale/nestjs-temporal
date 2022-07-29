@@ -13,22 +13,24 @@ exports.createClientProviders = exports.buildClient = void 0;
 const client_1 = require("@temporalio/client");
 const utils_1 = require("./utils");
 function buildClient(option) {
-    const connection = client_1.Connection.lazy(option.connection);
-    const client = new client_1.WorkflowClient(Object.assign({ connection }, option.workflowOptions));
-    connection.onApplicationShutdown = function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.close();
-        });
-    };
-    return client;
+    return __awaiter(this, void 0, void 0, function* () {
+        const connection = yield client_1.Connection.connect(option.connection);
+        const client = new client_1.WorkflowClient(Object.assign({ connection }, option.workflowOptions));
+        connection.onApplicationShutdown = function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                return yield this.close();
+            });
+        };
+        return client;
+    });
 }
 exports.buildClient = buildClient;
 function createClientProviders(options) {
     return options.map((option) => ({
         provide: (0, utils_1.getQueueToken)(option && option.name ? option.name : undefined),
-        useFactory: () => {
-            return buildClient(option || {});
-        },
+        useFactory: () => __awaiter(this, void 0, void 0, function* () {
+            return yield buildClient(option || {});
+        }),
     }));
 }
 exports.createClientProviders = createClientProviders;
