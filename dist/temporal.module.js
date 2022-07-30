@@ -55,7 +55,10 @@ let TemporalModule = TemporalModule_1 = class TemporalModule {
         }
     }
     static registerClient(options) {
-        const createClientProvider = (0, temporal_providers_1.createClientProviders)([].concat(options));
+        const realOptions = [].concat(options);
+        console.log('logging options');
+        console.log(realOptions);
+        const createClientProvider = (0, temporal_providers_1.createClientProviders)(realOptions);
         return {
             global: true,
             module: TemporalModule_1,

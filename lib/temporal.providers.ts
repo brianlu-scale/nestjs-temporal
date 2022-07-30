@@ -4,6 +4,8 @@ import { Connection, WorkflowClient } from '@temporalio/client';
 import { getQueueToken } from './utils';
 
 export async function buildClient(option: TemporalModuleOptions): Promise<WorkflowClient> {
+  console.log('logging options here');
+  console.log(option);
   const connection = await Connection.connect(option.connection);
   console.log('connection options');
   console.log(option.connection);
