@@ -3,10 +3,10 @@ import { TemporalModuleOptions } from './interfaces';
 import { Connection, WorkflowClient } from '@temporalio/client';
 import { getQueueToken } from './utils';
 
-export async function buildClient(option: TemporalModuleOptions): Promise<WorkflowClient> {
+export function buildClient(option: TemporalModuleOptions): WorkflowClient {
   // console.log('logging options here');
   // console.log(option);
-  const connection = await Connection.connect(option.connection);
+  const connection = Connection.lazy(option.connection);
   // console.log('connection options');
   // console.log(option.connection);
   // console.log('client options');
@@ -36,8 +36,8 @@ export function createClientProviders(
 ): Provider[] {
   return options.map((option) => ({
     provide: getQueueToken(option && option.name ? option.name : undefined),
-    useFactory: async () => {
-      return await buildClient(option || {});
+    useFactory: () => {
+      return buildClient(option || {});
     },
   }));
 }
