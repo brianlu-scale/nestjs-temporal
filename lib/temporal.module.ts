@@ -71,9 +71,6 @@ export class TemporalModule {
 
   static registerClient(options?: TemporalModuleOptions): DynamicModule {
     const realOptions = [].concat(options);
-    console.log('logging options');
-    console.log(realOptions);
-    console.trace();
     const createClientProvider = createClientProviders(realOptions);
     return {
       global: true,
