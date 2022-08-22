@@ -10,10 +10,12 @@ export declare class TemporalExplorer implements OnModuleInit, OnModuleDestroy, 
     private readonly metadataScanner;
     private readonly injector;
     private worker;
+    private connection;
+    private workerPromise;
     constructor(moduleRef: ModuleRef, discoveryService: DiscoveryService, metadataAccessor: TemporalMetadataAccessor, metadataScanner: MetadataScanner);
     onModuleInit(): Promise<void>;
-    onModuleDestroy(): void;
-    onApplicationBootstrap(): void;
+    onModuleDestroy(): Promise<void>;
+    onApplicationBootstrap(): Promise<void>;
     explore(): Promise<void>;
     getWorkerConfigOptions(name?: string): WorkerOptions;
     getNativeConnectionConfigOptions(name?: string): NativeConnectionOptions;

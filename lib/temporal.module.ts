@@ -19,6 +19,7 @@ export class TemporalModule {
     workerConfig: WorkerOptions,
     nativeConnectionConfig?: NativeConnectionOptions,
   ): DynamicModule {
+
     const workerConfigProvider: Provider = {
       provide: TEMPORAL_WORKER_CONFIG,
       useValue: workerConfig,

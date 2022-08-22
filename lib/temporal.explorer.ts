@@ -21,6 +21,8 @@ export class TemporalExplorer
 {
   private readonly injector = new Injector();
   private worker: Worker;
+  private connection: NativeConnection | undefined;
+  private workerPromise: Promise<void>;
 
   constructor(
     private readonly moduleRef: ModuleRef,
@@ -33,13 +35,15 @@ export class TemporalExplorer
     await this.explore();
   }
 
-  onModuleDestroy() {
-    this.worker.shutdown();
+  async onModuleDestroy() {
+    await this.workerPromise;
+    await this.connection?.close();
   }
 
-  onApplicationBootstrap() {
-    setTimeout(() => {
-      this.worker.run();
+  async onApplicationBootstrap() {
+    setTimeout(async () => {
+      this.workerPromise = this.worker.run();
+      await this.workerPromise;
     }, 1000);
   }
 
@@ -50,17 +54,15 @@ export class TemporalExplorer
     // should contain taskQueue
     if (workerConfig.taskQueue) {
       const activitiesFunc = await this.handleActivities();
-
-      const connection = await NativeConnection.connect(nativeConnectionConfig);
-      this.worker = await Worker.create(
-        Object.assign(
-          {
-            activities: activitiesFunc,
-            connection,
-          },
-          workerConfig,
-        ),
+      this.connection = await NativeConnection.connect(nativeConnectionConfig);
+      const newWorkerConfig = Object.assign(
+        {
+          activities: activitiesFunc,
+          connection: this.connection,
+        },
+        workerConfig,
       );
+      this.worker = await Worker.create(newWorkerConfig);
     }
   }
 

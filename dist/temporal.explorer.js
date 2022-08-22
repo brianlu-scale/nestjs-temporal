@@ -39,12 +39,19 @@ let TemporalExplorer = class TemporalExplorer {
         });
     }
     onModuleDestroy() {
-        this.worker.shutdown();
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.workerPromise;
+            yield ((_a = this.connection) === null || _a === void 0 ? void 0 : _a.close());
+        });
     }
     onApplicationBootstrap() {
-        setTimeout(() => {
-            this.worker.run();
-        }, 1000);
+        return __awaiter(this, void 0, void 0, function* () {
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                this.workerPromise = this.worker.run();
+                yield this.workerPromise;
+            }), 1000);
+        });
     }
     explore() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,11 +59,12 @@ let TemporalExplorer = class TemporalExplorer {
             const nativeConnectionConfig = this.getNativeConnectionConfigOptions();
             if (workerConfig.taskQueue) {
                 const activitiesFunc = yield this.handleActivities();
-                const connection = yield worker_1.NativeConnection.connect(nativeConnectionConfig);
-                this.worker = yield worker_1.Worker.create(Object.assign({
+                this.connection = yield worker_1.NativeConnection.connect(nativeConnectionConfig);
+                const newWorkerConfig = Object.assign({
                     activities: activitiesFunc,
-                    connection,
-                }, workerConfig));
+                    connection: this.connection,
+                }, workerConfig);
+                this.worker = yield worker_1.Worker.create(newWorkerConfig);
             }
         });
     }
