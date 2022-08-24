@@ -56,6 +56,12 @@ let TemporalExplorer = class TemporalExplorer {
     explore() {
         return __awaiter(this, void 0, void 0, function* () {
             const workerConfig = this.getWorkerConfigOptions();
+            worker_1.Runtime.install({
+                telemetryOptions: Object.assign({}, (process.env.DD_AGENT_HOST
+                    ? { metrics: { otel: { url: `http://${process.env.DD_AGENT_HOST}:4317` } } }
+                    : {})),
+            });
+            ;
             const nativeConnectionConfig = this.getNativeConnectionConfigOptions();
             if (workerConfig.taskQueue) {
                 const activitiesFunc = yield this.handleActivities();

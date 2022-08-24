@@ -8,7 +8,7 @@ import { DiscoveryService, MetadataScanner, ModuleRef } from '@nestjs/core';
 import { Injector } from '@nestjs/core/injector/injector';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
 import { TemporalMetadataAccessor } from './temporal-metadata.accessors';
-import { Worker, WorkerOptions, NativeConnection, NativeConnectionOptions } from '@temporalio/worker';
+import { Worker, WorkerOptions, NativeConnection, NativeConnectionOptions, Runtime } from '@temporalio/worker';
 import { UntypedActivities } from '@temporalio/activity';
 import {
   TEMPORAL_NATIVE_CONNECTION_CONFIG,
@@ -49,6 +49,18 @@ export class TemporalExplorer
 
   async explore() {
     const workerConfig: WorkerOptions = this.getWorkerConfigOptions();
+
+    Runtime.install({
+      // TODO: Logging
+      telemetryOptions: {
+        // logging: {
+        //   forward: { level: 'INFO' },
+        // },
+        ...(process.env.DD_AGENT_HOST
+          ? { metrics: { otel: { url: `http://${process.env.DD_AGENT_HOST}:4317` } } }
+          : {}),
+      },
+    });;
     const nativeConnectionConfig: NativeConnectionOptions = this.getNativeConnectionConfigOptions();
 
     // should contain taskQueue
