@@ -1,6 +1,5 @@
 import {
   Injectable,
-  OnApplicationBootstrap,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
@@ -17,7 +16,7 @@ import {
 
 @Injectable()
 export class TemporalExplorer
-  implements OnModuleInit, OnModuleDestroy, OnApplicationBootstrap
+  implements OnModuleInit, OnModuleDestroy
 {
   private readonly injector = new Injector();
   private worker: Worker;
@@ -40,11 +39,9 @@ export class TemporalExplorer
     await this.connection?.close();
   }
 
-  async onApplicationBootstrap() {
-    setTimeout(async () => {
-      this.workerPromise = this.worker.run();
-      await this.workerPromise;
-    }, 1000);
+  async runWorker() {
+    this.workerPromise = this.worker.run();
+    await this.workerPromise;
   }
 
   async explore() {

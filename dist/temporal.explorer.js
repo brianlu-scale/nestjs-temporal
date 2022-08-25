@@ -45,12 +45,10 @@ let TemporalExplorer = class TemporalExplorer {
             yield ((_a = this.connection) === null || _a === void 0 ? void 0 : _a.close());
         });
     }
-    onApplicationBootstrap() {
+    runWorker() {
         return __awaiter(this, void 0, void 0, function* () {
-            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                this.workerPromise = this.worker.run();
-                yield this.workerPromise;
-            }), 1000);
+            this.workerPromise = this.worker.run();
+            yield this.workerPromise;
         });
     }
     explore() {
