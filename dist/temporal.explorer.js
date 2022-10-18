@@ -66,9 +66,7 @@ let TemporalExplorer = class TemporalExplorer {
     explore() {
         return __awaiter(this, void 0, void 0, function* () {
             worker_1.Runtime.install({
-                telemetryOptions: Object.assign({}, (process.env.DD_AGENT_HOST
-                    ? { metrics: { otel: { url: `http://${process.env.DD_AGENT_HOST}:4317` } } }
-                    : {})),
+                telemetryOptions: {},
             });
             const nativeConnectionConfig = this.getNativeConnectionConfigOptions();
             this.connection = yield worker_1.NativeConnection.connect(nativeConnectionConfig);
