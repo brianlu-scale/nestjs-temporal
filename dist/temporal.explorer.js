@@ -25,6 +25,7 @@ const injector_1 = require("@nestjs/core/injector/injector");
 const temporal_metadata_accessors_1 = require("./temporal-metadata.accessors");
 const worker_1 = require("@temporalio/worker");
 const temporal_constants_1 = require("./temporal.constants");
+const url_1 = require("url");
 let TemporalExplorer = class TemporalExplorer {
     constructor(moduleRef, discoveryService, metadataAccessor, metadataScanner) {
         this.moduleRef = moduleRef;
@@ -67,7 +68,13 @@ let TemporalExplorer = class TemporalExplorer {
         return __awaiter(this, void 0, void 0, function* () {
             worker_1.Runtime.install({
                 telemetryOptions: Object.assign({}, (process.env.DD_AGENT_HOST
-                    ? { metrics: { otel: { url: `http://${process.env.DD_AGENT_HOST}:4317` } } }
+                    ? {
+                        metrics: {
+                            otel: {
+                                url: (0, url_1.format)({ protocol: 'http', hostname: process.env.DD_AGENT_HOST, port: 4317 }),
+                            },
+                        },
+                    }
                     : {})),
             });
             const nativeConnectionConfig = this.getNativeConnectionConfigOptions();
