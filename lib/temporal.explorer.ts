@@ -13,6 +13,7 @@ import {
   TEMPORAL_NATIVE_CONNECTION_CONFIG,
   TEMPORAL_WORKER_CONFIG,
 } from './temporal.constants';
+import { format } from 'url';
 
 @Injectable()
 export class TemporalExplorer
@@ -67,9 +68,15 @@ export class TemporalExplorer
         // logging: {
         //   forward: { level: 'INFO' },
         // },
-        // ...(process.env.DD_AGENT_HOST
-        //   ? { metrics: { otel: { url: `http://${process.env.DD_AGENT_HOST}:4317` } } }
-        //   : {}),
+        ...(process.env.DD_AGENT_HOST
+          ? {
+              metrics: {
+                otel: {
+                  url: format({ protocol: 'http', hostname: process.env.DD_AGENT_HOST, port: 4317 }),
+                },
+              },
+            }
+          : {}),
       },
     });
     const nativeConnectionConfig: NativeConnectionOptions = this.getNativeConnectionConfigOptions();
